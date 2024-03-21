@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: gateway-service
+  security: 
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/Server
+  cloud:
+    discovery:
+      serviceId: config-server
+      enabled: true
+    gateway:
+      default-filters:
+        - tokenRelay=
+      routes:
+        - id: checkout
+          uri: lb://checkout
+          predicates: 
+            - path=/checkout
+          filters: 
+            - AddRequestHeader=X-Request-from, gateway
+            - AddRequestHeader=X-Response-Red, Blue
+         - id: product-service
+          uri: lb://product-service
+          predicates: 
+            - path=/product-service
+
+server:
+  port: 8085
+             
+        
+    
